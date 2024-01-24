@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <script>
+      let HOST = location.origin.replace(/^http/, 'ws')
+      let ws = new WebSocket(HOST);
+      let el;
+
+      function logConnectedUsers() {
+        console.log(`接続中のユーザー数: ${ws.clients.size}`);
+      }
+
+      ws.onopen = (event) => {
+        logConnectedUsers();
+      }
+
+      ws.onmessage = (event) => {
+        logConnectedUsers();
+        console.log(`接続中のユーザー数: ${ws.clients.size}`);
+      };
+    </script>
+  </head>
+  <body>
+    <p id="server-time"></p>
+  </body>
+</html>

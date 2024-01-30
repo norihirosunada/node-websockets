@@ -1,10 +1,11 @@
 import express from 'express';
 import WebSocket, { Server as WebSocketServer } from 'ws';
+import 'dotenv/config'
 
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 const INDEX: string = '/index.html';
 const BETWEEN: string = '/theinbetween.html';
-const movieSize = 4;
+let movieSize = 1;
 
 const server = express()
   .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
@@ -12,8 +13,6 @@ const server = express()
     res.sendFile(BETWEEN, { root: __dirname });
   })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-const clientUrls = new Map<WebSocket, string>();
 
 // クライアントを表すクラス
 class Client {
@@ -46,6 +45,7 @@ let rooms: Room[] = [];
 const wss: WebSocketServer = new WebSocketServer({ server });
 
 wss.on('connection', (ws: WebSocket, req: express.Request): void => {
+  movieSize = Number(process.env.VIDEO_COUNT);
 
   const clientId = generateUniqueId();
   const client: Client = { id: clientId, ws: ws };

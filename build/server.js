@@ -5,17 +5,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const ws_1 = require("ws");
+require("dotenv/config");
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const INDEX = '/index.html';
 const BETWEEN = '/theinbetween.html';
-const movieSize = 4;
+let movieSize = 1;
 const server = (0, express_1.default)()
     .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
     .get('/theinbetween', (req, res) => {
     res.sendFile(BETWEEN, { root: __dirname });
 })
     .listen(PORT, () => console.log(`Listening on ${PORT}`));
-const clientUrls = new Map();
 // クライアントを表すクラス
 class Client {
     constructor(id, ws) {
@@ -35,6 +35,7 @@ let clients = [];
 let rooms = [];
 const wss = new ws_1.Server({ server });
 wss.on('connection', (ws, req) => {
+    movieSize = Number(process.env.VIDEO_COUNT);
     const clientId = generateUniqueId();
     const client = { id: clientId, ws: ws };
     clients.push(client);
